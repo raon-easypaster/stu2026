@@ -8,8 +8,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { slot_id, name, email, phone, student_id, department, topic, note } = body;
 
-    // Use the RPC function defined in schema.sql for atomic booking
-    const { error } = await supabase.rpc('book_slot', {
+    // Use a new unique RPC function name for atomic booking to avoid naming conflicts
+    const { error } = await supabase.rpc('reserve_slot_final', {
         p_slot_id: slot_id,
         p_name: name,
         p_email: email,
