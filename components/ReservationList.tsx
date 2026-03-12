@@ -21,20 +21,23 @@ const ReservationList = () => {
         const { data, error } = await supabase
             .from('reservations')
             .select(`
-        *,
-        counseling_slots (
-          start_time,
-          end_time
-        )
-      `)
-            .order('created_at', { ascending: false });
+                *,
+                counseling_slots!inner (
+                    start_time,
+                    end_time
+                )
+            `)
+            .order('start_time', { foreignTable: 'counseling_slots', ascending: true });
 
         if (!error && data) {
-            // Sort by counseling_slots start_time ascending
+            // Robust frontend sorting as fallback
             const sortedData = [...data].sort((a, b) => {
-                const dateA = new Date(a.counseling_slots?.start_time || 0).getTime();
-                const dateB = new Date(b.counseling_slots?.start_time || 0).getTime();
-                return dateA - dateB;
+                const getStartTime = (res: any) => {
+                    const slots = res.counseling_slots;
+                    const startTime = Array.isArray(slots) ? slots[0]?.start_time : slots?.start_time;
+                    return new Date(startTime || 0).getTime();
+                };
+                return getStartTime(a) - getStartTime(b);
             });
             setReservations(sortedData);
         }
