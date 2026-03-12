@@ -60,7 +60,7 @@ export default function Home() {
                             </li>
                             <li className="flex items-start gap-2 font-semibold text-primary">
                                 <span className="mt-1">•</span>
-                                <span>당일 상담을 원할 경우 전화로 문의 하세요.</span>
+                                <span>당일 or 토요일 상담을 원할 경우 따로 문의 주시기 바랍니다.</span>
                             </li>
                             <li className="flex items-start gap-2 font-medium text-slate-900 border-t border-slate-100 pt-2 mt-2">
                                 <span className="text-primary mt-1">•</span>
