@@ -81,20 +81,20 @@ const ReservationList = () => {
                 ) : (
                     reservations.map((res) => (
                         <div key={res.id} className="glass-card p-6 hover:border-primary/30 transition-all border-l-4 border-l-primary relative group">
-                            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
+                            <div className="absolute top-4 right-4 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex items-center gap-2">
                                 <button
                                     onClick={() => {
                                         setSelectedReservation(res);
                                         setIsEditModalOpen(true);
                                     }}
-                                    className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                    className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors bg-white/50 backdrop-blur-sm md:bg-transparent"
                                     title="수정"
                                 >
                                     <Edit2 size={18} />
                                 </button>
                                 <button
                                     onClick={() => handleDelete(res.id, res.slot_id)}
-                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors bg-white/50 backdrop-blur-sm md:bg-transparent"
                                     title="취소"
                                 >
                                     <Trash2 size={18} />

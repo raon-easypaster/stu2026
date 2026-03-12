@@ -13,9 +13,16 @@ const AdminCalendar = () => {
     const [slots, setSlots] = useState<any[]>([]);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedReservation, setSelectedReservation] = useState<any>(null);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
         fetchSlots();
+        return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     const fetchSlots = async () => {
@@ -174,45 +181,49 @@ const AdminCalendar = () => {
     }));
 
     return (
-        <div className="glass-card p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-slate-800">일정 관리</h2>
-                <div className="text-right">
-                    <p className="text-sm text-slate-500 font-medium">드래그: 새로운 시간 생성</p>
-                    <p className="text-sm text-slate-400">박스 드래그/리사이즈: 일정 변경</p>
+        <div className="glass-card p-3 md:p-6 overflow-hidden">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 mb-6">
+                <h2 className="text-lg md:text-xl font-bold text-slate-800">일정 관리</h2>
+                <div className="text-left md:text-right">
+                    <p className="text-xs md:text-sm text-slate-500 font-medium">드래그: 새로운 시간 생성</p>
+                    <p className="text-xs md:text-sm text-slate-400">박스 클릭/드래그: 정보 확인 및 변경</p>
                 </div>
             </div>
-            <FullCalendar
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                initialView="timeGridWeek"
-                locale="ko"
-                headerToolbar={{
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay',
-                }}
-                buttonText={{
-                    today: '오늘',
-                    month: '월',
-                    week: '주',
-                    day: '일',
-                }}
-                selectable={true}
-                select={handleSelect}
-                events={events}
-                eventClick={handleEventClick}
-                eventDrop={handleEventDrop}
-                eventResize={handleEventResize}
-                height="auto"
-                slotMinTime="08:00:00"
-                slotMaxTime="20:00:00"
-                slotDuration="01:00:00"
-                snapDuration="01:00:00"
-                allDaySlot={false}
-                editable={true}
-                eventStartEditable={true}
-                eventDurationEditable={true}
-            />
+            <div className="calendar-container overflow-x-auto">
+                <FullCalendar
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                    initialView={isMobile ? "timeGridDay" : "timeGridWeek"}
+                    locale="ko"
+                    headerToolbar={{
+                        left: isMobile ? 'prev,next' : 'prev,next today',
+                        center: 'title',
+                        right: isMobile ? 'timeGridDay,timeGridWeek' : 'dayGridMonth,timeGridWeek,timeGridDay',
+                    }}
+                    dayHeaderFormat={isMobile ? { weekday: 'short', day: 'numeric' } : { weekday: 'short', month: 'numeric', day: 'numeric', omitCommas: true }}
+                    buttonText={{
+                        today: '오늘',
+                        month: '월',
+                        week: '주',
+                        day: '일',
+                    }}
+                    selectable={true}
+                    select={handleSelect}
+                    events={events}
+                    eventClick={handleEventClick}
+                    eventDrop={handleEventDrop}
+                    eventResize={handleEventResize}
+                    height="auto"
+                    slotMinTime="08:00:00"
+                    slotMaxTime="20:00:00"
+                    slotDuration="01:00:00"
+                    snapDuration="01:00:00"
+                    allDaySlot={false}
+                    editable={true}
+                    eventStartEditable={true}
+                    eventDurationEditable={true}
+                    longPressDelay={100} // Improve touch interaction
+                />
+            </div>
 
             <EditReservationModal
                 reservation={selectedReservation}
