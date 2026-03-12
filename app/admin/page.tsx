@@ -112,7 +112,7 @@ export default function AdminDashboard() {
                             {activeTab === 'calendar' ? '상담 시간대 관리' : '학생 예약 목록'}
                         </h2>
                         <p className="text-sm md:text-base text-slate-500 mt-1 italic">
-                            관리자 계정으로 접속 중
+                            관리자 계정으로 접속 중 (v1.0.3 - sorting_fix)
                         </p>
                     </div>
 
