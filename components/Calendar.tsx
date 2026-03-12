@@ -98,6 +98,16 @@ const Calendar = () => {
                 slotDuration="01:00:00"
                 snapDuration="01:00:00"
                 allDaySlot={false}
+                dayCellClassNames={(arg) => {
+                    const dateStr = arg.date.toISOString().split('T')[0];
+                    const holidays = [
+                        '2026-01-01', '2026-02-16', '2026-02-17', '2026-02-18',
+                        '2026-03-01', '2026-05-05', '2026-05-24', '2026-06-06',
+                        '2026-08-15', '2026-09-24', '2026-09-25', '2026-09-26',
+                        '2026-10-03', '2026-10-09', '2026-12-25'
+                    ];
+                    return holidays.includes(dateStr) ? 'fc-day-holiday' : '';
+                }}
             />
 
             {isModalOpen && selectedSlot && (

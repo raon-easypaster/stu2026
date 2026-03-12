@@ -46,3 +46,28 @@ body {
 .fc .fc-day-today {
   background-color: rgba(59, 130, 246, 0.08) !important;
 }
+
+/* Weekend & Holiday Colors */
+/* Sunday - Red */
+.fc .fc-day-sun .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-top .fc-daygrid-day-number[href*="sun"],
+.fc .fc-day-sun .fc-timegrid-slot-label-cushion,
+.fc-day-sun .fc-daygrid-day-number {
+  color: #ef4444 !important;
+  /* text-red-500 */
+}
+
+/* Saturday - Blue */
+.fc .fc-day-sat .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-top .fc-daygrid-day-number[href*="sat"],
+.fc-day-sat .fc-daygrid-day-number {
+  color: #3b82f6 !important;
+  /* text-blue-500 */
+}
+
+/* Holidays - Red (Custom class) */
+.fc-day-holiday .fc-col-header-cell-cushion,
+.fc-day-holiday .fc-daygrid-day-number,
+.fc-day-holiday .fc-timegrid-axis-cushion {
+  color: #ef4444 !important;
+}
