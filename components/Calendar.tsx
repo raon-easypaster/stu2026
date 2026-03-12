@@ -49,8 +49,8 @@ const Calendar = () => {
             const slotStartOfDay = new Date(slotDate.getFullYear(), slotDate.getMonth(), slotDate.getDate());
             const todayStartOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-            if (slotStartOfDay <= todayStartOfDay) {
-                alert('당일 상담 예약은 불가능합니다. 당일 상담을 원하실 경우 전화(010-5606-0845)로 문의해 주세요.');
+            if (slotStartOfDay <= todayStartOfDay || slotDate.getDay() === 6) {
+                alert('당일 or 토요일 상담을 원할 경우 따로 문의 주시기 바랍니다.');
                 return;
             }
 

@@ -13,6 +13,7 @@ export default function ReservePage() {
                     <div className="text-right">
                         <h1 className="text-3xl font-bold text-slate-900">상담 예약 신청</h1>
                         <p className="text-slate-500">예약 가능한 노란색 시간대를 클릭하여 상담을 예약하세요.</p>
+                        <p className="text-slate-400 text-sm mt-1">※ 상담일정은 추후 변경될 수 있습니다.</p>
                     </div>
                 </div>
 
