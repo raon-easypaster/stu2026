@@ -168,7 +168,9 @@ const ReservationModal = ({ slot, isOpen, onClose, onSuccess }: ReservationModal
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">추가 문의사항</label>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                                            추가 문의사항 <span className="text-slate-400 text-xs">(선택사항)</span>
+                                        </label>
                                         <textarea
                                             rows={3}
                                             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
