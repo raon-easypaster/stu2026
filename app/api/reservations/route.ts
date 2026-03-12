@@ -22,24 +22,26 @@ export async function POST(request: Request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
-    // Send email notifications
-    try {
-        await resend.emails.send({
-            from: 'STU Counseling <onboarding@resend.dev>',
-            to: [email],
-            subject: 'Counseling Reservation Confirmed',
-            html: `
-        <h1>Reservation Confirmed</h1>
-        <p>Dear ${name},</p>
-        <p>Your counseling session has been successfully booked.</p>
-        <hr />
-        <p><strong>Topic:</strong> ${topic}</p>
-        <p><strong>Date & Time:</strong> ${new Date().toLocaleString()}</p>
-        <p><strong>Note:</strong> ${note || 'N/A'}</p>
-      `,
-        });
-    } catch (err) {
-        console.error('Email sending failed:', err);
+    // Send email notifications (if email provided)
+    if (email) {
+        try {
+            await resend.emails.send({
+                from: 'STU Counseling <onboarding@resend.dev>',
+                to: [email],
+                subject: 'Counseling Reservation Confirmed',
+                html: `
+            <h1>Reservation Confirmed</h1>
+            <p>Dear ${name},</p>
+            <p>Your counseling session has been successfully booked.</p>
+            <hr />
+            <p><strong>Topic:</strong> ${topic}</p>
+            <p><strong>Date & Time:</strong> ${new Date().toLocaleString()}</p>
+            <p><strong>Note:</strong> ${note || 'N/A'}</p>
+          `,
+            });
+        } catch (err) {
+            console.error('Email sending failed:', err);
+        }
     }
 
     return NextResponse.json({ success: true });

@@ -22,7 +22,7 @@ const ReservationModal = ({ slot, isOpen, onClose, onSuccess }: ReservationModal
         phone: '',
         student_id: '',
         department: '',
-        topic: '',
+        topic: '신앙상담1',
         note: '',
     });
     const [loading, setLoading] = useState(false);
@@ -141,10 +141,12 @@ const ReservationModal = ({ slot, isOpen, onClose, onSuccess }: ReservationModal
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">이메일</label>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                                            이메일 <span className="text-slate-400 text-xs">(선택사항)</span>
+                                        </label>
                                         <input
-                                            required
                                             type="email"
+                                            placeholder="예: user@example.com"
                                             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -153,13 +155,16 @@ const ReservationModal = ({ slot, isOpen, onClose, onSuccess }: ReservationModal
 
                                     <div>
                                         <label className="block text-sm font-medium text-slate-700 mb-1">상담 주제</label>
-                                        <input
+                                        <select
                                             required
-                                            type="text"
-                                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white"
                                             value={formData.topic}
                                             onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
-                                        />
+                                        >
+                                            <option value="신앙상담1">신앙상담1</option>
+                                            <option value="신앙상담2">신앙상담2</option>
+                                            <option value="기타">기타</option>
+                                        </select>
                                     </div>
 
                                     <div>
@@ -172,7 +177,11 @@ const ReservationModal = ({ slot, isOpen, onClose, onSuccess }: ReservationModal
                                         ></textarea>
                                     </div>
 
-                                    {error && <p className="text-danger text-sm font-medium">{error}</p>}
+                                    {error && (
+                                        <div className="p-3 bg-red-50 border border-red-100 rounded-lg text-danger text-sm font-medium">
+                                            {error === 'Slot is already booked or not found' ? '이미 다른 학생이 예약한 시간대입니다. 다른 시간을 선택해 주세요.' : error}
+                                        </div>
+                                    )}
 
                                     <button
                                         disabled={loading}
