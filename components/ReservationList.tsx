@@ -2,16 +2,22 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { User, Mail, GraduationCap, MessageSquare, Clock, Calendar as CalendarIcon } from 'lucide-react';
+import { User, Mail, GraduationCap, MessageSquare, Clock, Calendar as CalendarIcon, Trash2, Edit2 } from 'lucide-react';
+import EditReservationModal from './EditReservationModal';
 
 const ReservationList = () => {
     const [reservations, setReservations] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState(''); // Not used in this version, but kept as per instruction
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedReservation, setSelectedReservation] = useState<any>(null);
 
     useEffect(() => {
         fetchReservations();
     }, []);
 
     const fetchReservations = async () => {
+        setLoading(true);
         const { data, error } = await supabase
             .from('reservations')
             .select(`
@@ -26,23 +32,24 @@ const ReservationList = () => {
         if (!error && data) {
             setReservations(data);
         }
+        setLoading(false);
     };
 
-    const handleCancel = async (reservation: any) => {
-        const confirmed = window.confirm(`${reservation.name} 학생의 예약을 취소하시겠습니까?\n취소 시 해당 시간은 다시 "예약 가능" 상태로 변경됩니다.`);
+    const handleDelete = async (id: string, slot_id: string) => {
+        const confirmed = window.confirm(`예약을 취소하시겠습니까?\n취소 시 해당 시간은 다시 "예약 가능" 상태로 변경됩니다.`);
         if (confirmed) {
             // Delete reservation
             const { error: delError } = await supabase
                 .from('reservations')
                 .delete()
-                .eq('id', reservation.id);
+                .eq('id', id);
 
             if (!delError) {
                 // Set slot back to available
                 await supabase
                     .from('counseling_slots')
                     .update({ status: 'available' })
-                    .eq('id', reservation.slot_id);
+                    .eq('id', slot_id);
 
                 fetchReservations();
             } else {
@@ -63,19 +70,34 @@ const ReservationList = () => {
                 </button>
             </div>
             <div className="grid gap-4">
-                {reservations.length === 0 ? (
+                {loading ? (
+                    <div className="glass-card p-12 text-center text-slate-500 italic">
+                        예약을 불러오는 중입니다...
+                    </div>
+                ) : reservations.length === 0 ? (
                     <div className="glass-card p-12 text-center text-slate-500 italic">
                         접수된 예약이 없습니다.
                     </div>
                 ) : (
                     reservations.map((res) => (
                         <div key={res.id} className="glass-card p-6 hover:border-primary/30 transition-all border-l-4 border-l-primary relative group">
-                            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
                                 <button
-                                    onClick={() => handleCancel(res)}
-                                    className="px-3 py-1 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 text-xs font-semibold flex items-center gap-1 border border-red-100 transition-colors"
+                                    onClick={() => {
+                                        setSelectedReservation(res);
+                                        setIsEditModalOpen(true);
+                                    }}
+                                    className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                    title="수정"
                                 >
-                                    예약 취소
+                                    <Edit2 size={18} />
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(res.id, res.slot_id)}
+                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                    title="취소"
+                                >
+                                    <Trash2 size={18} />
                                 </button>
                             </div>
                             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
@@ -137,6 +159,16 @@ const ReservationList = () => {
                     ))
                 )}
             </div>
+
+            <EditReservationModal
+                reservation={selectedReservation}
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onSuccess={() => {
+                    setIsEditModalOpen(false);
+                    fetchReservations();
+                }}
+            />
         </div>
     );
 };

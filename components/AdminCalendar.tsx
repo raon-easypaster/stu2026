@@ -7,9 +7,12 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { supabase } from '@/lib/supabase';
 import { Plus, Trash2 } from 'lucide-react';
+import EditReservationModal from './EditReservationModal';
 
 const AdminCalendar = () => {
     const [slots, setSlots] = useState<any[]>([]);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedReservation, setSelectedReservation] = useState<any>(null);
 
     useEffect(() => {
         fetchSlots();
@@ -108,7 +111,7 @@ const AdminCalendar = () => {
             }
 
             const action = window.prompt(
-                `[예약 정보]\n이름: ${resData.name}\n학과: ${resData.department}\n학번: ${resData.student_id}\n연락처: ${resData.phone}\n주제: ${resData.topic}\n내용: ${resData.note || '없음'}\n\n어떤 작업을 하시겠습니까?\n1: 예약 취소 (박스는 유지)\n2: 일정 완전 삭제 (박스까지 삭제)\n취소: 아무것도 안 함`,
+                `[예약 정보]\n이름: ${resData.name}\n학과: ${resData.department}\n학번: ${resData.student_id}\n연락처: ${resData.phone}\n주제: ${resData.topic}\n내용: ${resData.note || '없음'}\n\n어떤 작업을 하시겠습니까?\n1: 예약 취소 (박스는 유지)\n2: 일정 완전 삭제 (박스까지 삭제)\n3: 정보 수정\n취소: 아무것도 안 함`,
                 ''
             );
 
@@ -138,6 +141,9 @@ const AdminCalendar = () => {
                         .eq('id', eventId);
                     if (!delError) fetchSlots();
                 }
+            } else if (action === '3') {
+                setSelectedReservation(resData);
+                setIsEditModalOpen(true);
             }
         } else {
             const confirmed = window.confirm('이 상담 시간(예약 가능)을 삭제하시겠습니까?');
@@ -206,6 +212,16 @@ const AdminCalendar = () => {
                 editable={true}
                 eventStartEditable={true}
                 eventDurationEditable={true}
+            />
+
+            <EditReservationModal
+                reservation={selectedReservation}
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onSuccess={() => {
+                    setIsEditModalOpen(false);
+                    fetchSlots();
+                }}
             />
         </div>
     );
