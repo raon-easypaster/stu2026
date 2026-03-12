@@ -22,6 +22,39 @@ export async function POST(request: Request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
+    // Send Telegram Notification
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+
+    if (botToken && chatId) {
+        try {
+            const message = `
+🔔 *새로운 상담 예약이 신청되었습니다*
+
+👤 *이름:* ${name}
+🎓 *학과:* ${department}
+🆔 *학번:* ${student_id}
+📞 *연락처:* ${phone}
+📧 *이메일:* ${email || '없음'}
+📝 *상담 주제:* ${topic}
+💭 *문의사항:* ${note || '없음'}
+📅 *신청일시:* ${new Date().toLocaleString('ko-KR')}
+            `.trim();
+
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                    parse_mode: 'Markdown',
+                }),
+            });
+        } catch (err) {
+            console.error('Telegram notification failed:', err);
+        }
+    }
+
     // Send email notifications (if email provided)
     if (email) {
         try {
