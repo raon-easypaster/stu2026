@@ -53,6 +53,12 @@ const ReservationModal = ({ slot, isOpen, onClose, onSuccess }: ReservationModal
                 }, 2000);
             } else {
                 setError(result.error || 'Failed to book reservation');
+                // If it's already booked, the UI is stale. Close and refresh.
+                if (result.error === 'Slot is already booked or not found') {
+                    setTimeout(() => {
+                        onSuccess(); // This will refresh the slots in the parent
+                    }, 3000);
+                }
             }
         } catch (err) {
             setError('An error occurred. Please try again.');
