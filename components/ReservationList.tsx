@@ -30,7 +30,6 @@ const ReservationList = () => {
             .order('start_time', { foreignTable: 'counseling_slots', ascending: true });
 
         if (!error && data) {
-            console.log('Fetched reservations raw:', data.length);
             // Robust frontend sorting as fallback
             const sortedData = [...data].sort((a, b) => {
                 const getStartTime = (res: any) => {
@@ -43,10 +42,6 @@ const ReservationList = () => {
                 const timeB = getStartTime(b);
                 return timeA - timeB;
             });
-            console.log('Sorted reservations:', sortedData.map(d => {
-                const slots = d.counseling_slots;
-                return Array.isArray(slots) ? slots[0]?.start_time : slots?.start_time;
-            }));
             setReservations(sortedData);
         }
         setLoading(false);

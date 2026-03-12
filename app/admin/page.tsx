@@ -111,14 +111,9 @@ export default function AdminDashboard() {
                         <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900">
                             {activeTab === 'calendar' ? '상담 시간대 관리' : '학생 예약 목록'}
                         </h2>
-                        <div className="flex items-center gap-2 mt-1">
-                            <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse">
-                                Live Fix Active
-                            </span>
-                            <p className="text-sm md:text-base text-slate-500 italic">
-                                관리자 계정으로 접속 중 (v1.0.4)
-                            </p>
-                        </div>
+                        <p className="text-sm md:text-base text-slate-500 mt-1 italic">
+                            관리자 계정으로 접속 중
+                        </p>
                     </div>
 
                     <div className="hidden md:flex items-center gap-4">
