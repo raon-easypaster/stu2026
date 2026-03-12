@@ -187,7 +187,9 @@ const ReservationModal = ({ slot, isOpen, onClose, onSuccess }: ReservationModal
 
                                     {error && (
                                         <div className="p-3 bg-red-50 border border-red-100 rounded-lg text-danger text-sm font-medium">
-                                            {error === 'Slot is already booked or not found' ? '이미 다른 학생이 예약한 시간대입니다. 다른 시간을 선택해 주세요.' : error}
+                                            {(error.includes('already booked') || error.includes('no longer available') || error.includes('이미 예약된'))
+                                                ? '이미 다른 학생이 예약한 시간대입니다. 화면을 새로고침하여 최신 상태를 확인해 주세요.'
+                                                : error}
                                         </div>
                                     )}
 
