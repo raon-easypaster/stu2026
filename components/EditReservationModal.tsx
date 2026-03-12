@@ -62,7 +62,9 @@ const EditReservationModal = ({ reservation, isOpen, onClose, onSuccess }: EditR
 
             onSuccess();
         } catch (err: any) {
+            console.error('Update failed:', err);
             setError(err.message || '수정 중 오류가 발생했습니다.');
+            alert('저장 실패: ' + (err.message || '알 수 없는 오류'));
         } finally {
             setLoading(false);
         }
