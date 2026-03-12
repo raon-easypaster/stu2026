@@ -112,14 +112,27 @@ const ReservationModal = ({ slot, isOpen, onClose, onSuccess }: ReservationModal
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-slate-700 mb-1">학과</label>
-                                            <input
+                                            <select
                                                 required
-                                                type="text"
-                                                placeholder="예: 신학과"
-                                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white"
                                                 value={formData.department}
                                                 onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                                            />
+                                            >
+                                                <option value="" disabled>학과를 선택하세요</option>
+                                                <option value="관광경영">관광경영</option>
+                                                <option value="컴퓨터공학">컴퓨터공학</option>
+                                                <option value="Al 융합">Al 융합</option>
+                                                <option value="데이터사이언스">데이터사이언스</option>
+                                                <option value="실용음악">실용음악</option>
+                                                <option value="교회음악">교회음악</option>
+                                                <option value="유아교육">유아교육</option>
+                                                <option value="아동보육">아동보육</option>
+                                                <option value="사회복지">사회복지</option>
+                                                <option value="글로벌경영">글로벌경영</option>
+                                                <option value="일본어문화콘텐츠">일본어문화콘텐츠</option>
+                                                <option value="중국언어문화콘텐츠">중국언어문화콘텐츠</option>
+                                                <option value="자율전공학부">자율전공학부</option>
+                                            </select>
                                         </div>
                                     </div>
 
