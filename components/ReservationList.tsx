@@ -30,7 +30,13 @@ const ReservationList = () => {
             .order('created_at', { ascending: false });
 
         if (!error && data) {
-            setReservations(data);
+            // Sort by counseling_slots start_time ascending
+            const sortedData = [...data].sort((a, b) => {
+                const dateA = new Date(a.counseling_slots?.start_time || 0).getTime();
+                const dateB = new Date(b.counseling_slots?.start_time || 0).getTime();
+                return dateA - dateB;
+            });
+            setReservations(sortedData);
         }
         setLoading(false);
     };
