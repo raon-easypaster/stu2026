@@ -11,7 +11,7 @@ export default function ReservePage() {
                         <ArrowLeft size={20} className="mr-2" /> 홈으로 돌아가기
                     </Link>
                     <div className="text-right">
-                        <h1 className="text-3xl font-bold text-slate-900">교수 상담 예약</h1>
+                        <h1 className="text-3xl font-bold text-slate-900">상담 예약 신청</h1>
                         <p className="text-slate-500">예약 가능한 노란색 시간대를 클릭하여 상담을 예약하세요.</p>
                     </div>
                 </div>
