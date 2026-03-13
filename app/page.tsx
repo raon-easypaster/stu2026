@@ -62,6 +62,10 @@ export default function Home() {
                                 <span className="mt-1">•</span>
                                 <span>당일 or 토요일 상담을 원할 경우 따로 문의 주시기 바랍니다.</span>
                             </li>
+                            <li className="flex items-start gap-2 font-bold text-amber-600 bg-amber-50 p-2 rounded-lg border border-amber-100">
+                                <span className="mt-1">※</span>
+                                <span>예약을 신청하면 관리자 승인 후 예약이 확정 됩니다.</span>
+                            </li>
                             <li className="flex items-start gap-2 font-medium text-slate-900 border-t border-slate-100 pt-2 mt-2">
                                 <span className="text-primary mt-1">•</span>
                                 <span>문의) 010-5606-0845 목사 이광복</span>
