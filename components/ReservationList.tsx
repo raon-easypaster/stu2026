@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { User, Mail, GraduationCap, MessageSquare, Clock, Calendar as CalendarIcon, Trash2, Edit2 } from 'lucide-react';
+import { User, Mail, GraduationCap, MessageSquare, Clock, Calendar as CalendarIcon, Trash2, Edit2, CheckCircle2, Check, X } from 'lucide-react';
 import EditReservationModal from './EditReservationModal';
 
 const ReservationList = () => {
@@ -45,6 +45,38 @@ const ReservationList = () => {
             setReservations(sortedData);
         }
         setLoading(false);
+    };
+
+    const handleStatusUpdate = async (id: string, newStatus: string) => {
+        const { error } = await supabase
+            .from('reservations')
+            .update({ status: newStatus })
+            .eq('id', id);
+
+        if (!error) {
+            fetchReservations();
+        } else {
+            alert('상태 변경 실패: ' + error.message);
+        }
+    };
+
+    const handleReject = async (resId: string, slotId: string) => {
+        if (!window.confirm('이 예약을 반려하시겠습니까? 해당 상담 시간은 다시 예약 가능 상태로 변경됩니다.')) return;
+
+        const { error: resError } = await supabase
+            .from('reservations')
+            .update({ status: 'rejected' })
+            .eq('id', resId);
+
+        if (!resError) {
+            await supabase
+                .from('counseling_slots')
+                .update({ status: 'available' })
+                .eq('id', slotId);
+            fetchReservations();
+        } else {
+            alert('반려 실패: ' + resError.message);
+        }
     };
 
     const handleDelete = async (id: string, slot_id: string) => {
@@ -134,15 +166,29 @@ const ReservationList = () => {
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                                             {res.phone}
                                         </div>
-                                        <div className="flex items-center gap-2 font-medium text-primary">
-                                            <Clock size={16} />
-                                            {new Date(res.counseling_slots.start_time).toLocaleString('ko-KR', {
+                                            <CalendarIcon size={16} />
+                                            {new Date(res.counseling_slots[0]?.start_time || res.counseling_slots?.start_time).toLocaleString('ko-KR', {
                                                 year: 'numeric',
                                                 month: 'long',
                                                 day: 'numeric',
                                                 hour: '2-digit',
                                                 minute: '2-digit'
                                             })}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            {res.status === 'pending' && (
+                                                <span className="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                                    <Clock size={12} /> 승인 대기
+                                                </span>
+                                            )}
+                                            {res.status === 'confirmed' && (
+                                                <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                                    <CheckCircle2 size={12} /> 확정됨
+                                                </span>
+                                            )}
+                                            {res.status === 'rejected' && (
+                                                <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">반려됨</span>
+                                            )}
                                         </div>
                                     </div>
 
@@ -161,6 +207,22 @@ const ReservationList = () => {
                                 </div>
 
                                 <div className="text-right flex flex-col items-end gap-2 text-xs text-slate-400 shrink-0">
+                                    {res.status === 'pending' && (
+                                        <div className="flex gap-2 mb-2">
+                                            <button
+                                                onClick={() => handleStatusUpdate(res.id, 'confirmed')}
+                                                className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1 text-xs font-bold shadow-sm"
+                                            >
+                                                <Check size={14} /> 승인
+                                            </button>
+                                            <button
+                                                onClick={() => handleReject(res.id, res.slot_id)}
+                                                className="px-3 py-1.5 bg-white text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-1 text-xs font-bold shadow-sm"
+                                            >
+                                                <X size={14} /> 반려
+                                            </button>
+                                        </div>
+                                    )}
                                     <div className="flex items-center gap-1">
                                         <CalendarIcon size={14} />
                                         예약일: {new Date(res.created_at).toLocaleDateString()}
@@ -181,7 +243,7 @@ const ReservationList = () => {
                     fetchReservations();
                 }}
             />
-        </div>
+        </div >
     );
 };
 

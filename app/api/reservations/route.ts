@@ -26,6 +26,8 @@ export async function POST(request: Request) {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
 
+    console.log('[Telegram Notification Check]', { hasToken: !!botToken, hasChatId: !!chatId });
+
     if (botToken && chatId) {
         try {
             const message = `
@@ -41,7 +43,7 @@ export async function POST(request: Request) {
 📅 *신청일시:* ${new Date().toLocaleString('ko-KR')}
             `.trim();
 
-            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            const teleResult = await global.fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -50,9 +52,13 @@ export async function POST(request: Request) {
                     parse_mode: 'Markdown',
                 }),
             });
+            const teleData = await teleResult.json();
+            console.log('[Telegram API Result]', teleData);
         } catch (err) {
             console.error('Telegram notification failed:', err);
         }
+    } else {
+        console.warn('[Telegram] Skipping notification: Missing token or chat ID');
     }
 
     // Send email notifications (if email provided)

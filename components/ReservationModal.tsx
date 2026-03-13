@@ -89,9 +89,10 @@ const ReservationModal = ({ slot, isOpen, onClose, onSuccess }: ReservationModal
                         <div className="p-6">
                             {success ? (
                                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                                    <CheckCircle2 size={64} className="text-success mb-4" />
-                                    <h3 className="text-2xl font-bold text-slate-800">예약이 완료되었습니다!</h3>
-                                    <p className="text-slate-600 mt-2">{formData.email}로 확인 메일을 발송했습니다.</p>
+                                    <CheckCircle2 size={64} className="text-amber-500 mb-4" />
+                                    <h3 className="text-2xl font-bold text-slate-800">예약 신청이 접수되었습니다!</h3>
+                                    <p className="text-slate-600 mt-2 font-medium">관리자 승인 후 최종 확정됩니다.</p>
+                                    <p className="text-slate-500 text-sm mt-1">{formData.email}로 진행 상황을 안내해 드립니다.</p>
                                 </div>
                             ) : (
                                 <form onSubmit={handleSubmit} className="space-y-4">
