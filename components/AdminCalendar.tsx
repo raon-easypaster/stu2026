@@ -117,13 +117,23 @@ const AdminCalendar = () => {
                 return;
             }
 
+            const statusKR = resData.status === 'pending' ? '승인 대기' : resData.status === 'confirmed' ? '확정됨' : '반려됨';
             const action = window.prompt(
-                `[예약 정보]\n이름: ${resData.name}\n학과: ${resData.department}\n학번: ${resData.student_id}\n연락처: ${resData.phone}\n주제: ${resData.topic}\n내용: ${resData.note || '없음'}\n\n어떤 작업을 하시겠습니까?\n1: 예약 취소 (박스는 유지)\n2: 일정 완전 삭제 (박스까지 삭제)\n3: 정보 수정\n취소: 아무것도 안 함`,
+                `[예약 정보 - ${statusKR}]\n이름: ${resData.name}\n학과: ${resData.department}\n학번: ${resData.student_id}\n연락처: ${resData.phone}\n주제: ${resData.topic}\n내용: ${resData.note || '없음'}\n\n어떤 작업을 하시겠습니까?\n${resData.status === 'pending' ? '0: 예약 승인\n' : ''}1: 예약 취소 (박스는 유지)\n2: 일정 완전 삭제 (박스까지 삭제)\n3: 정보 수정\n4: 예약 반려 (Available로 복구)\n취소: 아무것도 안 함`,
                 ''
             );
 
-            if (action === '1') {
-                const confirmCancel = window.confirm('예약을 취소하고 해당 시간을 다시 "예약 가능" 상태로 바꾸시겠습니까?');
+            if (action === '0' && resData.status === 'pending') {
+                const { error } = await supabase
+                    .from('reservations')
+                    .update({ status: 'confirmed' })
+                    .eq('id', resData.id);
+                if (!error) {
+                    alert('예약이 승인되었습니다.');
+                    fetchSlots();
+                }
+            } else if (action === '1') {
+                const confirmCancel = window.confirm('예약을 취소하시겠습니까?');
                 if (confirmCancel) {
                     // Delete reservation and set slot to available
                     const { error: delError } = await supabase
@@ -151,6 +161,22 @@ const AdminCalendar = () => {
             } else if (action === '3') {
                 setSelectedReservation(resData);
                 setIsEditModalOpen(true);
+            } else if (action === '4') {
+                const confirmReject = window.confirm('예약을 반려하고 다시 "예약 가능" 상태로 바꾸시겠습니까?');
+                if (confirmReject) {
+                    const { error: resError } = await supabase
+                        .from('reservations')
+                        .update({ status: 'rejected' })
+                        .eq('id', resData.id);
+
+                    if (!resError) {
+                        await supabase
+                            .from('counseling_slots')
+                            .update({ status: 'available' })
+                            .eq('id', eventId);
+                        fetchSlots();
+                    }
+                }
             }
         } else {
             const confirmed = window.confirm('이 상담 시간(예약 가능)을 삭제하시겠습니까?');

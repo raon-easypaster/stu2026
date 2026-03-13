@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     if (botToken && chatId) {
         try {
             const message = `
-🔔 *새로운 상담 예약이 신청되었습니다*
+⏳ *새로운 상담 예약이 신청되었습니다 (승인 대기)*
 
 👤 *이름:* ${name}
 🎓 *학과:* ${department}
