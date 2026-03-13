@@ -28,7 +28,7 @@ const AdminCalendar = () => {
     const fetchSlots = async () => {
         const { data, error } = await supabase
             .from('counseling_slots')
-            .select('*');
+            .select('*, reservations(status)');
 
         if (!error && data) {
             setSlots(data);
@@ -195,16 +195,39 @@ const AdminCalendar = () => {
         }
     };
 
-    const events = slots.map((slot) => ({
-        id: slot.id,
-        start: slot.start_time,
-        end: slot.end_time,
-        title: slot.status === 'available' ? '예약 가능' : slot.status === 'booked' ? '예약 완료' : '차단됨',
-        backgroundColor: slot.status === 'available' ? '#FBBF24' : slot.status === 'booked' ? '#DC2626' : '#2563EB',
-        textColor: slot.status === 'available' ? '#000000' : '#ffffff',
-        borderColor: 'transparent',
-        editable: true,
-    }));
+    const events = slots.map((slot) => {
+        const reservationStatus = slot.reservations?.[0]?.status || 'available';
+        let backgroundColor = '#FBBF24'; // Available (Yellow)
+        let title = '예약 가능';
+        let textColor = '#000000';
+
+        if (slot.status === 'booked') {
+            if (reservationStatus === 'pending') {
+                backgroundColor = '#F97316'; // Pending (Orange)
+                title = '승인 대기';
+                textColor = '#ffffff';
+            } else {
+                backgroundColor = '#DC2626'; // Confirmed (Red)
+                title = '예약 완료';
+                textColor = '#ffffff';
+            }
+        } else if (slot.status === 'blocked') {
+            backgroundColor = '#2563EB'; // Blocked (Blue)
+            title = '차단됨';
+            textColor = '#ffffff';
+        }
+
+        return {
+            id: slot.id,
+            start: slot.start_time,
+            end: slot.end_time,
+            title,
+            backgroundColor,
+            textColor,
+            borderColor: 'transparent',
+            editable: true,
+        };
+    });
 
     return (
         <div className="glass-card p-3 md:p-6 overflow-hidden">

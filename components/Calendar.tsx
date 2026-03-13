@@ -27,7 +27,7 @@ const Calendar = () => {
     const fetchSlots = async () => {
         const { data, error } = await supabase
             .from('counseling_slots')
-            .select('*')
+            .select('*, reservations(status)')
             .neq('status', 'blocked');
 
         if (!error && data) {
@@ -59,16 +59,35 @@ const Calendar = () => {
         }
     };
 
-    const events = slots.map((slot) => ({
-        id: slot.id,
-        start: slot.start_time,
-        end: slot.end_time,
-        title: slot.status === 'available' ? '예약 가능' : '예약 완료',
-        backgroundColor: slot.status === 'available' ? '#FBBF24' : '#DC2626',
-        textColor: slot.status === 'available' ? '#000000' : '#ffffff',
-        borderColor: 'transparent',
-        extendedProps: slot,
-    }));
+    const events = slots.map((slot: any) => {
+        const reservationStatus = slot.reservations?.[0]?.status || 'available';
+        let backgroundColor = '#FBBF24'; // Available (Yellow)
+        let title = '예약 가능';
+        let textColor = '#000000';
+
+        if (slot.status === 'booked') {
+            if (reservationStatus === 'pending') {
+                backgroundColor = '#F97316'; // Pending (Orange)
+                title = '승인 대기';
+                textColor = '#ffffff';
+            } else {
+                backgroundColor = '#DC2626'; // Confirmed (Red)
+                title = '예약 완료';
+                textColor = '#ffffff';
+            }
+        }
+
+        return {
+            id: slot.id,
+            start: slot.start_time,
+            end: slot.end_time,
+            title,
+            backgroundColor,
+            textColor,
+            borderColor: 'transparent',
+            extendedProps: slot,
+        };
+    });
 
     return (
         <div className="glass-card p-6 min-h-[600px]">
