@@ -124,6 +124,7 @@ const ReservationList = () => {
                     </div>
                 ) : (
                     reservations.map((res) => (
+                        <div key={res.id} className="glass-card p-6 hover:border-primary/30 transition-all border-l-4 border-l-primary relative group">
                             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                                 <div className="space-y-3 flex-1">
                                     <div className="flex items-center justify-between">
