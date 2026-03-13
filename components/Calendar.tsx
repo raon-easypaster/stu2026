@@ -61,15 +61,15 @@ const Calendar = () => {
 
     const events = slots.map((slot: any) => {
         const reservationStatus = slot.reservations?.[0]?.status || 'available';
-        let backgroundColor = '#FBBF24'; // Available (Yellow)
+        let backgroundColor = '#10B981'; // Available (Green)
         let title = '예약 가능';
-        let textColor = '#000000';
+        let textColor = '#ffffff';
 
         if (slot.status === 'booked') {
             if (reservationStatus === 'pending') {
-                backgroundColor = '#F97316'; // Pending (Orange)
+                backgroundColor = '#FBBF24'; // Pending (Yellow)
                 title = '승인 대기';
-                textColor = '#ffffff';
+                textColor = '#000000';
             } else {
                 backgroundColor = '#DC2626'; // Confirmed (Red)
                 title = '예약 완료';

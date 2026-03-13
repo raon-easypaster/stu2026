@@ -124,36 +124,37 @@ const ReservationList = () => {
                     </div>
                 ) : (
                     reservations.map((res) => (
-                        <div key={res.id} className="glass-card p-6 hover:border-primary/30 transition-all border-l-4 border-l-primary relative group">
-                            <div className="absolute top-4 right-4 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex items-center gap-2">
-                                <button
-                                    onClick={() => {
-                                        setSelectedReservation(res);
-                                        setIsEditModalOpen(true);
-                                    }}
-                                    className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors bg-white/50 backdrop-blur-sm md:bg-transparent"
-                                    title="수정"
-                                >
-                                    <Edit2 size={18} />
-                                </button>
-                                <button
-                                    onClick={() => handleDelete(res.id, res.slot_id)}
-                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors bg-white/50 backdrop-blur-sm md:bg-transparent"
-                                    title="취소"
-                                >
-                                    <Trash2 size={18} />
-                                </button>
-                            </div>
                             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-2">
-                                        <User size={18} className="text-primary" />
-                                        <div className="flex flex-wrap items-baseline gap-2">
-                                            <span className="font-bold text-slate-900 text-lg">{res.name}</span>
-                                            <span className="text-slate-500 text-sm font-medium">({res.department})</span>
-                                            <span className="text-slate-400 px-2 py-0.5 bg-slate-100 rounded text-xs font-mono">
-                                                {res.student_id}
-                                            </span>
+                                <div className="space-y-3 flex-1">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <User size={18} className="text-primary" />
+                                            <div className="flex flex-wrap items-baseline gap-2">
+                                                <span className="font-bold text-slate-900 text-lg">{res.name}</span>
+                                                <span className="text-slate-500 text-sm font-medium">({res.department})</span>
+                                                <span className="text-slate-400 px-2 py-0.5 bg-slate-100 rounded text-xs font-mono">
+                                                    {res.student_id}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedReservation(res);
+                                                    setIsEditModalOpen(true);
+                                                }}
+                                                className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                title="수정"
+                                            >
+                                                <Edit2 size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(res.id, res.slot_id)}
+                                                className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                title="취소"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
                                         </div>
                                     </div>
 
