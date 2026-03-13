@@ -88,11 +88,11 @@ const ReservationModal = ({ slot, isOpen, onClose, onSuccess }: ReservationModal
 
                         <div className="p-6">
                             {success ? (
-                                <div className="flex flex-col items-center justify-center py-8 text-center">
-                                    <CheckCircle2 size={64} className="text-amber-500 mb-4" />
+                                <div className="flex flex-col items-center justify-center py-8 text-center animate-in fade-in zoom-in duration-300">
+                                    <Clock size={64} className="text-amber-500 mb-4 animate-pulse" />
                                     <h3 className="text-2xl font-bold text-slate-800">예약 신청이 접수되었습니다!</h3>
-                                    <p className="text-slate-600 mt-2 font-medium">관리자 승인 후 최종 확정됩니다.</p>
-                                    <p className="text-slate-500 text-sm mt-1">{formData.email}로 진행 상황을 안내해 드립니다.</p>
+                                    <p className="text-slate-600 mt-2 font-medium">관리자의 승인이 완료된 후 최종 확정됩니다.</p>
+                                    <p className="text-slate-500 text-sm mt-1">입력하신 연락처로 안내 메시지가 전송될 예정입니다.</p>
                                 </div>
                             ) : (
                                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -212,7 +212,7 @@ const ReservationModal = ({ slot, isOpen, onClose, onSuccess }: ReservationModal
                                         type="submit"
                                         className="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50"
                                     >
-                                        {loading ? '처리 중...' : '예약 확정'}
+                                        {loading ? '처리 중...' : '예약 신청'}
                                     </button>
                                 </form>
                             )}
