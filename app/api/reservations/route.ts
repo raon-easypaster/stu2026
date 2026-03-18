@@ -76,29 +76,34 @@ export async function POST(request: Request) {
 
     // Send email notifications (if email provided)
     if (email) {
-        try {
-            const emailResult = await resend.emails.send({
-                from: 'STU Counseling <onboarding@resend.dev>',
-                to: [email],
-                subject: '[STU 외래상담] 예약 신청이 접수되었습니다',
-                html: `
-            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                <h2 style="color: #0F172A;">상담 예약 신청 접수 안내</h2>
-                <p>안녕하세요, ${name} 학생. 상담 예약 신청이 정상적으로 접수되었습니다.</p>
-                <div style="background-color: #F8FAFC; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                    <p style="margin: 5px 0;"><strong>상담 일시:</strong> ${consultationTime}</p>
-                    <p style="margin: 5px 0;"><strong>상담 주제:</strong> ${topic}</p>
-                    <p style="margin: 5px 0;"><strong>상태:</strong> <span style="color: #F59E0B; font-weight: bold;">관리자 승인 대기 중</span></p>
+        if (!process.env.RESEND_API_KEY) {
+            console.error('[Resend] MISSING API KEY: Please set RESEND_API_KEY in Vercel environment variables.');
+        } else {
+            try {
+                console.log('[Resend] Attempting to send email to:', email);
+                const emailResult = await resend.emails.send({
+                    from: 'STU Counseling <onboarding@resend.dev>',
+                    to: [email],
+                    subject: '[STU 외래상담] 예약 신청이 접수되었습니다',
+                    html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                    <h2 style="color: #0F172A;">상담 예약 신청 접수 안내</h2>
+                    <p>안녕하세요, ${name} 학생. 상담 예약 신청이 정상적으로 접수되었습니다.</p>
+                    <div style="background-color: #F8FAFC; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                        <p style="margin: 5px 0;"><strong>상담 일시:</strong> ${consultationTime}</p>
+                        <p style="margin: 5px 0;"><strong>상담 주제:</strong> ${topic}</p>
+                        <p style="margin: 5px 0;"><strong>상태:</strong> <span style="color: #F59E0B; font-weight: bold;">관리자 승인 대기 중</span></p>
+                    </div>
+                    <p style="color: #64748B; font-size: 14px;">관리자가 확인 후 예약을 최종 승인하면 예약이 확정됩니다. 궁금한 점이 있으시면 따로 문의해 주세요.</p>
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
+                    <p style="font-size: 12px; color: #94A3B8;">본 메일은 STU 외래신앙상담 예약 시스템에서 자동으로 발송되었습니다.</p>
                 </div>
-                <p style="color: #64748B; font-size: 14px;">관리자가 확인 후 예약을 최종 승인하면 예약이 확정됩니다. 궁금한 점이 있으시면 따로 문의해 주세요.</p>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
-                <p style="font-size: 12px; color: #94A3B8;">본 메일은 STU 외래신앙상담 예약 시스템에서 자동으로 발송되었습니다.</p>
-            </div>
-          `,
-            });
-            console.log('[Resend Email Result]', emailResult);
-        } catch (err) {
-            console.error('Email sending failed:', err);
+              `,
+                });
+                console.log('[Resend Email Result]', emailResult);
+            } catch (err: any) {
+                console.error('[Resend Email Error]', err.message || err);
+            }
         }
     }
 
