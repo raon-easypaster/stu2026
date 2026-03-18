@@ -76,12 +76,25 @@ export async function POST(request: Request) {
 
     // Send email notifications (if email provided)
     if (email) {
-        if (!process.env.RESEND_API_KEY) {
-            console.error('[Resend] MISSING API KEY: Please set RESEND_API_KEY in Vercel environment variables.');
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) {
+            console.error('[Resend] MISSING API KEY');
+            // Notify admin via Telegram that email failed due to missing key
+            if (botToken && chatId) {
+                await global.fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: `⚠️ *이메일 발송 실패 알림*\n사유: RESEND_API_KEY가 설정되지 않았습니다.`,
+                        parse_mode: 'Markdown',
+                    }),
+                });
+            }
         } else {
             try {
-                console.log('[Resend] Attempting to send email to:', email);
-                const emailResult = await resend.emails.send({
+                const resendClient = new Resend(apiKey);
+                const emailResult = await resendClient.emails.send({
                     from: 'STU Counseling <onboarding@resend.dev>',
                     to: [email],
                     subject: '[STU 외래상담] 예약 신청이 접수되었습니다',
@@ -100,9 +113,26 @@ export async function POST(request: Request) {
                 </div>
               `,
                 });
+
+                if (emailResult.error) {
+                    throw new Error(emailResult.error.message || 'Unknown Resend error');
+                }
+
                 console.log('[Resend Email Result]', emailResult);
             } catch (err: any) {
                 console.error('[Resend Email Error]', err.message || err);
+                // Notify admin via Telegram that email failed
+                if (botToken && chatId) {
+                    await global.fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            text: `⚠️ *학생 이메일 발송 실패*\n수신: ${email}\n사유: ${err.message || '알 수 없는 오류'}`,
+                            parse_mode: 'Markdown',
+                        }),
+                    });
+                }
             }
         }
     }
