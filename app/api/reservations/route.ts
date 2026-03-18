@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     // Send email notifications (if email provided)
     if (email) {
         try {
-            await resend.emails.send({
+            const emailResult = await resend.emails.send({
                 from: 'STU Counseling <onboarding@resend.dev>',
                 to: [email],
                 subject: '[STU 외래상담] 예약 신청이 접수되었습니다',
@@ -96,6 +96,7 @@ export async function POST(request: Request) {
             </div>
           `,
             });
+            console.log('[Resend Email Result]', emailResult);
         } catch (err) {
             console.error('Email sending failed:', err);
         }
