@@ -31,6 +31,7 @@ export async function POST(request: Request) {
 
     const consultationTime = slotData?.start_time 
         ? new Date(slotData.start_time).toLocaleString('ko-KR', {
+            timeZone: 'Asia/Seoul',
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -56,7 +57,7 @@ export async function POST(request: Request) {
 📝 *상담 주제:* ${topic}
 📅 *상담 일시:* ${consultationTime}
 💭 *문의사항:* ${note || '없음'}
-⏱ *신청일시:* ${new Date().toLocaleString('ko-KR')}
+⏱ *신청일시:* ${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
             `.trim();
 
             await global.fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
