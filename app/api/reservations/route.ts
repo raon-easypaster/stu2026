@@ -29,6 +29,7 @@ export async function POST(request: Request) {
         .eq('id', slot_id)
         .single();
 
+    const rawStartTime = slotData?.start_time || 'N/A';
     const consultationTime = slotData?.start_time 
         ? new Date(slotData.start_time).toLocaleString('ko-KR', {
             timeZone: 'Asia/Seoul',
@@ -36,7 +37,8 @@ export async function POST(request: Request) {
             month: 'long',
             day: 'numeric',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
+            hour12: true
           })
         : '시간 정보 없음';
 
@@ -58,6 +60,8 @@ export async function POST(request: Request) {
 📅 *상담 일시:* ${consultationTime}
 💭 *문의사항:* ${note || '없음'}
 ⏱ *신청일시:* ${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
+
+_(DEBUG: DB Raw Time: ${rawStartTime})_
             `.trim();
 
             await global.fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
